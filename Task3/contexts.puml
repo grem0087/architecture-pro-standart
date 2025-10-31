@@ -1,0 +1,37 @@
+@startuml context_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+
+Person(customer, "Клиент", "Физическое лицо, желающее открыть депозит")
+Person(manager, "Менеджер кол-центра", "Сотрудник банка, обрабатывающий заявки")
+Person(backoffice, "Сотрудник бэк-офиса", "Сотрудник, утверждающий условия депозита")
+
+' Системы
+System(web_site, "Веб-сайт банка", "Публичная часть для новых клиентов")
+
+System(internet_bank, "Интернет-банк", "Личный кабинет клиента")
+
+System(deposit_system, "Система открытия депозитов", "Основная система обработки заявок")
+
+System(abs, "АБС банка", "Автоматизированная банковская система")
+
+System(sms_service, "СМС-сервис", "Сервис отправки SMS-уведомлений")
+System(rate_management, "Управление ставками", "Система управления депозитными ставками")
+
+' Отношения
+Rel(customer, web_site, "Подача базовой заявки")
+Rel(customer, internet_bank, "Подача полной заявки")
+
+Rel(web_site, deposit_system, "Передача заявок")
+Rel(internet_bank, deposit_system, "Передача заявок")
+
+Rel(manager, deposit_system, "Обработка заявок")
+Rel(backoffice, deposit_system, "Утверждение условий")
+
+Rel(deposit_system, abs, "Синхронизация данных")
+Rel(deposit_system, sms_service, "Отправка уведомлений")
+Rel(deposit_system, rate_management, "Получение ставок")
+
+Rel(rate_management, abs, "Синхронизация ставок")
+
+@enduml
