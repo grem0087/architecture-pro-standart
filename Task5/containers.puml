@@ -1,0 +1,47 @@
+@startuml
+!include <C4/C4_Container>
+
+
+Person(customer, "Клиент", "Клиент банка")
+Person(stuff, "Сотрудник офиса", "Сотрудник, утверждающий условия депозита")
+Person(back_stuff, "Сотрудник бэхк офиса", "Сотрудник, утверждающий условия депозита")
+
+Container(web_site, "Веб-сайт банка", "Сайт банка")
+
+Container(internet_bank, "Интернет-банк", "ReactTS")
+
+System_Boundary(c1, "Кредитный конвеер") {
+Container(credit_service, "Система работы с кредитами", "Java")
+Container(rate_management, "Управление ставками", "Java")
+ContainerDb(ccDB, "Database", "Oracle")  
+}
+
+System_Boundary(c2, "АБС") {
+  Container(abs, "АБС банка", "Java")
+  ContainerDb(absDB, "Database", "Oracle")  
+}
+System_Ext(sms_service, "СМС-сервис", "Шлюз работы сSMS")
+System_Ext(buro, "Бюро кредитных историй", "Шлюз работы сSMS")
+
+
+
+Rel(customer, web_site, "Подача заявки")
+Rel(customer, internet_bank, "Подача заявки")
+
+Rel(web_site, c1, "Передача заявок")
+Rel(internet_bank, c1, "Подача заявки")
+
+Rel(abs, absDB, "Синхронизация данных")
+
+Rel(stuff, c1, "Утверждение условий")
+
+Rel(c1, buro, "Синхронизация данных")
+Rel(c1, abs, "Синхронизация данных")
+Rel(c1, sms_service, "Отправка уведомлений")
+Rel(back_stuff, abs, "Получение ставок")
+
+Rel(credit_service, rate_management, "Утверждение условий")
+Rel(credit_service, ccDB, "Утверждение условий")
+
+
+@enduml

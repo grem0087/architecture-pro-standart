@@ -1,0 +1,48 @@
+@startuml
+!include <C4/C4_Container>
+
+
+Person(customer, "Клиент", "Клиент банка")
+Person(stuff, "Сотрудник офиса", "Сотрудник, утверждающий условия депозита")
+Person(call_stuff, "Сотрудник колл-центра")
+
+Container(web_site, "Веб-сайт банка", "Сайт банка")
+
+System_Boundary(c1, "Интернет-банк") {
+  Container(internet_bank_front, "Интернет-банк", "ReactTS")
+  Container(internet_bank_back, "Интернет-банк", "Java, SpringBoot")
+  ContainerDb(iDB, "Database", "MS SQL")  
+}
+Container(deposit_system, "Система работы с депозитами", "Система работы с депозитными заявками")
+
+System_Boundary(c2, "АБС") {
+  Container(abs, "АБС банка", "Java")
+  ContainerDb(absDB, "Database", "Oracle")  
+}
+System_Ext(sms_service, "СМС-сервис", "Шлюз работы сSMS")
+Container(rate_management, "Управление ставками", "Система управления депозитными ставками")
+Container(rate_share, "Файловый архив", "Файловое хранилище доступное не из сети банка")
+
+Rel(rate_management, rate_share, "Обновление данных о ставках")
+Rel(call_stuff, rate_share, "Получение обновлений")
+
+Rel(customer, web_site, "Подача заявки")
+Rel(customer, c1, "Подача заявки")
+
+Rel(web_site, deposit_system, "Передача заявок")
+
+Rel(internet_bank_front, internet_bank_back, "Передача данных")
+Rel(internet_bank_back, iDB, "Синхронизация данных")
+Rel(c1, deposit_system, "Подача заявки")
+
+Rel(abs, absDB, "Синхронизация данных")
+
+Rel(stuff, deposit_system, "Утверждение условий")
+
+Rel(deposit_system, abs, "Синхронизация данных")
+Rel(deposit_system, sms_service, "Отправка уведомлений")
+Rel(deposit_system, rate_management, "Получение ставок")
+
+Rel(rate_management, abs, "Синхронизация ставок")
+
+@enduml
