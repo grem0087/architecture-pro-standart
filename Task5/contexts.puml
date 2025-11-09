@@ -1,0 +1,35 @@
+@startuml context_diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+
+Person(customer, "Клиент", "Клиент банка")
+Person(stuff, "Сотрудник офиса", "Сотрудник, утверждающий условия депозита")
+Person(back_stuff, "Сотрудник бэк офиса", "Сотрудник, утверждающий условия депозита")
+
+System(web_site, "Веб-сайт банка", "Сайт банка")
+
+System(internet_bank, "Интернет-банк", "Личный кабинет")
+
+System(credit_conveer, "Кредитный конвеер", "Система работы с депозитными заявками")
+
+System(abs, "АБС банка", "Автоматизированная банковская система")
+
+System_Ext(sms_service, "СМС-сервис", "Шлюз работы сSMS")
+System(rate_management, "Скоринговая система банка")
+System_Ext(buro, "Бюро кредитных историй")
+
+Rel(customer, web_site, "Подача базовой заявки")
+Rel(customer, internet_bank, "Подача полной заявки")
+
+Rel(web_site, credit_conveer, "Передача заявок")
+Rel(internet_bank, credit_conveer, "Передача заявок")
+Rel(stuff, credit_conveer, "Утверждение условий")
+Rel(back_stuff, abs, "Утверждение условий")
+
+Rel(credit_conveer, abs, "Синхронизация данных")
+Rel(credit_conveer, sms_service, "Отправка уведомлений")
+Rel(credit_conveer, rate_management, "Получение ставок")
+Rel(rate_management, buro, "Получение данных о п-х")
+
+
+@enduml
